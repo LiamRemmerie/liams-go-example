@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"wordstats/getwords"
 	"wordstats/stats"
 )
+
+const forbidden string = ".?,!:; "
 
 func main() {
 	stats := new(stats.Stats)
@@ -15,9 +18,25 @@ func main() {
 	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt)
 	stats.WordChannel = getwords.GetWords(ctx)
 	for word := range stats.WordChannel {
+		word, err := cleanInput(word)
+		if err != nil {
+			panic(err)
+		}
 		stats.WordSlice = append(stats.WordSlice, word)
 	}
 	stats.UpdateCount()
 	stats.PrintWords()
 	stats.PrintStats()
+}
+
+func cleanInput(w string) (out string, err error) {
+	w = strings.TrimSpace(w)
+	if strings.ContainsAny(w, forbidden) {
+		err = fmt.Errorf("Please enter one word, not a sentence.")
+	} else if strings.Contains(w, "'") {
+		err = fmt.Errorf("Sorry, I don't like contractions.")
+	} else {
+		out = w
+	}
+	return
 }
