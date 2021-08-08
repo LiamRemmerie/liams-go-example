@@ -3,6 +3,7 @@ package stats
 import (
 	"fmt"
 	"wordstats/count"
+	"wordstats/sorting"
 )
 
 type Stats struct {
@@ -29,7 +30,14 @@ func (stats *Stats) printCount() {
 }
 
 func (stats *Stats) PrintWords() {
-	for num, word := range stats.WordSlice {
+	sorter, err := sorting.NewSorter(sorting.ALPHABET_TYPE)
+	if err != nil {
+		panic(err)
+	}
+	var sortedSlice []string
+	copy(sortedSlice, stats.WordSlice)
+	sorter.Sort(sortedSlice)
+	for num, word := range sortedSlice {
 		fmt.Printf("%d: %s\n", num+1, word)
 	}
 }

@@ -32,9 +32,9 @@ func main() {
 func cleanInput(w string) (out string, err error) {
 	w = strings.TrimSpace(w)
 	if strings.ContainsAny(w, forbidden) {
-		err = fmt.Errorf("Please enter one word, not a sentence.")
+		err = fmt.Errorf("please enter one word, not a sentence.")
 	} else if strings.Contains(w, "'") {
-		err = fmt.Errorf("Sorry, I don't like contractions.")
+		err = fmt.Errorf("sorry, I don't like contractions.")
 	} else {
 		out = w
 	}
