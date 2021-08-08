@@ -6,17 +6,18 @@ import (
 	"os"
 	"os/signal"
 	"wordstats/getwords"
+	"wordstats/stats"
 )
 
 func main() {
+	stats := new(stats.Stats)
 	fmt.Println("Hello there! Do you have some words for me? Please separate them with a newline!\nPress Ctrl+C when you're done.")
 	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt)
-	words := getwords.GetWords(ctx)
-	wordslice := make([]string, 0)
-	for word := range words {
-		wordslice = append(wordslice, word)
+	stats.WordChannel = getwords.GetWords(ctx)
+	for word := range stats.WordChannel {
+		stats.WordSlice = append(stats.WordSlice, word)
 	}
-	for num, word := range wordslice {
-		fmt.Printf("%d: %s\n", num+1, word)
-	}
+	stats.UpdateCount()
+	stats.PrintWords()
+	stats.PrintStats()
 }
