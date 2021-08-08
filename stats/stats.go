@@ -2,6 +2,7 @@ package stats
 
 import (
 	"fmt"
+	"wordstats/count"
 )
 
 type Stats struct {
@@ -12,6 +13,11 @@ type Stats struct {
 
 func (stats *Stats) PrintStats() {
 	stats.printCount()
+	mostLetter, mostAmount, countMap := count.CountLetters(stats.WordSlice)
+	for letter, amount := range countMap {
+		fmt.Printf("%s: %d\n", letter, amount)
+	}
+	fmt.Printf("The letter that occurred the most was %s, which was entered %d times\n", mostLetter, mostAmount)
 }
 
 func (stats *Stats) UpdateCount() {
@@ -19,7 +25,7 @@ func (stats *Stats) UpdateCount() {
 }
 
 func (stats *Stats) printCount() {
-	fmt.Printf("%d", stats.count)
+	fmt.Printf("Count: %d\n", stats.count)
 }
 
 func (stats *Stats) PrintWords() {
